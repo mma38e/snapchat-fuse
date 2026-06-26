@@ -1,6 +1,8 @@
 FROM nvidia/cuda:12.3.0-base-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+# On WSL2, NVIDIA encode/decode libs live here rather than /usr/local/nvidia/lib64
+ENV LD_LIBRARY_PATH=/usr/lib/wsl/lib:/usr/local/nvidia/lib64:/usr/local/nvidia/lib
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
@@ -8,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir pillow tqdm
+RUN pip3 install --no-cache-dir pillow tqdm piexif
 
 WORKDIR /app
 COPY fuse.py .
