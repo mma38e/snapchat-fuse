@@ -46,7 +46,9 @@ docker run --rm \
   snapchat-fuse
 ```
 
-Or use the convenience script (auto-detects GPU, optional json dir):
+> **WSL2 users:** Add `-v /usr/lib/wsl/lib:/usr/lib/wsl/lib:ro` to your `docker run` command. On WSL2 the NVIDIA encode library lives at `/usr/lib/wsl/lib` rather than the path the container toolkit normally injects, so without this mount `h264_nvenc` silently falls back to CPU encoding. To verify GPU is active, run `nvidia-smi dmon -s um -d 1` in a second terminal while encoding — the `enc` column should show non-zero values.
+
+Or use the convenience script (auto-detects GPU and WSL2, optional json dir):
 
 ```bash
 chmod +x run.sh
