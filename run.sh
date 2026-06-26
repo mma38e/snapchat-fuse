@@ -18,6 +18,13 @@ else
   echo "No GPU detected — falling back to libx264"
 fi
 
+# WSL2: mount NVIDIA encode/decode libs which live outside the normal container path
+WSL_LIB_FLAG=""
+if [ -d "/usr/lib/wsl/lib" ]; then
+  WSL_LIB_FLAG="-v /usr/lib/wsl/lib:/usr/lib/wsl/lib:ro"
+  echo "WSL2 detected — mounting NVIDIA libs from /usr/lib/wsl/lib"
+fi
+
 # Mount metadata JSON if json_dir provided and file exists
 META_FLAG=""
 JSON_FILE="${JSON_DIR}/memories_history.json"
@@ -31,5 +38,5 @@ fi
 docker run --rm $GPU_FLAG \
   -v "$(realpath "$MEMORIES")":/input:ro \
   -v "$(realpath "$OUTPUT")":/output:rw \
-  $META_FLAG \
+  $META_FLAG $WSL_LIB_FLAG \
   snapchat-fuse
